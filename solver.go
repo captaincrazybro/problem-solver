@@ -3,6 +3,7 @@ package main
 import "fmt"
 
 func Solve(f1 func(float64) float64, f2 func(float64) float64, b1 int, b2 int) float64 {
+
 	var values [][]float64
 
 	for i := b1; i <= b2; i++ {
@@ -34,6 +35,8 @@ func Solve(f1 func(float64) float64, f2 func(float64) float64, b1 int, b2 int) f
 	upperSide := calc_diff(f1, f2, least[2]+accuracy)
 	lowerSide := calc_diff(f1, f2, least[2]-accuracy)
 
+	fmt.Println(upperSide, lowerSide)
+
 	useUpper := upperSide < lowerSide
 	ogNumber := least[2]
 	newNumber := least[2]
@@ -55,6 +58,7 @@ func Solve(f1 func(float64) float64, f2 func(float64) float64, b1 int, b2 int) f
 			lowerSide = calc_diff(f1, f2, ogNumber-accuracy)
 			useUpper = upperSide < lowerSide
 
+			newNumber = ogNumber
 			diff *= 0.1
 		}
 		i++
