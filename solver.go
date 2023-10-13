@@ -1,11 +1,8 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
-func Solve(f1 func(float64) float64, f2 func(float64) float64, b1 int, b2 int) {
-
+func Solve(f1 func(float64) float64, f2 func(float64) float64, b1 int, b2 int) float64 {
 	var values [][]float64
 
 	for i := b1; i <= b2; i++ {
@@ -31,34 +28,45 @@ func Solve(f1 func(float64) float64, f2 func(float64) float64, b1 int, b2 int) {
 		}
 	})
 
-	fmt.Println(values[0])
-	fmt.Println(values[1])
-	fmt.Println(values[2])
-	
 	least := values[0]
-	accuracy := 0.0000000001
-	upperSide := calc_diff(f1, f2, least[2] + accuracy)
-	lowerSide := calc_diff(f1, f2, least[2] - accuracy)
+	accuracy := 0.00000001
+	diff := 0.1
+	upperSide := calc_diff(f1, f2, least[2]+accuracy)
+	lowerSide := calc_diff(f1, f2, least[2]-accuracy)
 
-	useUpper := true
-	if lowerSide > upperSide { useUpper = false }
-
+	useUpper := upperSide < lowerSide
 	ogNumber := least[2]
 	newNumber := least[2]
-	diff := 0.1
+	var triedNumbers []float64
+	triedNumbers = append(triedNumbers, ogNumber)
+	i := 0
 
 	for calc_diff(f1, f2, newNumber) > accuracy {
-		if useUpper { newNumber += diff
-		} else { newNumber -= diff }
+		fmt.Println(newNumber)
+		ogNumber = newNumber
+		if useUpper {
+			newNumber += diff
+		} else {
+			newNumber -= diff
+		}
 
+		if calc_diff(f1, f2, newNumber) > calc_diff(f1, f2, ogNumber) {
+			upperSide = calc_diff(f1, f2, ogNumber+accuracy)
+			lowerSide = calc_diff(f1, f2, ogNumber-accuracy)
+			useUpper = upperSide < lowerSide
 
+			diff *= 0.1
+		}
+		i++
 	}
+
+	return newNumber
 }
 
 func calc_diff(f1 func(f float64) float64, f2 func(f float64) float64, i float64) float64 {
 	val1 := f1(i)
 	val2 := f2(i)
-	
+
 	return abs(val1 - val2)
 }
 
